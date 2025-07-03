@@ -12,11 +12,22 @@ dist
 dist-ssr
 *.local
 
-# Editor directories and files
-.vscode/*
-!.vscode/extensions.json
-.idea
+# Node.js
+node_modules/
+*.log
+.env
+package-lock.json
+bun.lockb
+
+# VSCode
+.vscode/
+
+# OS
 .DS_Store
+Thumbs.db
+
+# Editor directories and files
+.idea
 *.suo
 *.ntvs*
 *.njsproj
