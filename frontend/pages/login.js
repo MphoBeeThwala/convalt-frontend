@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import axios from 'axios';
 import { useRouter } from 'next/router';
+import { useAuth } from '../src/authContext';
 
 export default function Login() {
   const [form, setForm] = useState({ email: '', password: '' });
   const [error, setError] = useState('');
   const router = useRouter();
+  const { login } = useAuth();
 
   const handleChange = e => setForm({ ...form, [e.target.name]: e.target.value });
 
@@ -14,7 +16,7 @@ export default function Login() {
     setError('');
     try {
       const res = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/auth/login`, form);
-      localStorage.setItem('token', res.data.token);
+      login(res.data.token); // store and decode JWT
       router.push('/dashboard');
     } catch (err) {
       setError(err.response?.data?.error || 'Login failed.');

@@ -2,7 +2,8 @@ import { useState } from 'react';
 import axios from 'axios';
 
 export default function Signup() {
-  const [form, setForm] = useState({ name: '', email: '', phone: '', national_id: '', password: '' });
+  // For dev/testing: allow role selection. Remove in production for security.
+  const [form, setForm] = useState({ name: '', email: '', phone: '', national_id: '', password: '', role: 'user' });
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -28,6 +29,11 @@ export default function Signup() {
         <input name="phone" placeholder="Phone Number" value={form.phone} onChange={handleChange} required className="border p-2 rounded" />
         <input name="national_id" placeholder="South African ID Number" value={form.national_id} onChange={handleChange} required className="border p-2 rounded" />
         <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required className="border p-2 rounded" />
+        {/* Remove this select in production for security! */}
+        <select name="role" value={form.role} onChange={handleChange} className="border p-2 rounded">
+          <option value="user">User</option>
+          <option value="admin">Admin</option>
+        </select>
         <button type="submit" className="bg-blue-600 text-white py-2 rounded">Sign Up</button>
         {error && <div className="text-red-600">{error}</div>}
         {success && <div className="text-green-600">{success}</div>}
