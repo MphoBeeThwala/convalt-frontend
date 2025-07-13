@@ -26,6 +26,10 @@ bun.lockb
 .DS_Store
 Thumbs.db
 
+# Webpack/Vite hot updates and cache files
+*.hot-update.*
+*.old
+
 # Editor directories and files
 .idea
 *.suo
