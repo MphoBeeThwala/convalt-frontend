@@ -8,6 +8,7 @@ export default function Home() {
       <div className="flex gap-4">
         <Link href="/signup" className="px-4 py-2 bg-blue-600 text-white rounded">Sign Up</Link>
         <Link href="/login" className="px-4 py-2 bg-gray-200 rounded">Login</Link>
+        <Link href="/basket" className="px-4 py-2 bg-green-600 text-white rounded">Basket Match</Link>
       </div>
     </main>
   );

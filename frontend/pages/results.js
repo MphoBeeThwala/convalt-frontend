@@ -1,6 +1,17 @@
 import { useRouter } from 'next/router';
 
-export default function Results() {
+import RequireAuth from '../components/RequireAuth';
+
+// Export wrapped with RequireAuth to protect the route
+export default function ProtectedResultsPage(props) {
+  return (
+    <RequireAuth>
+      <Results {...props} />
+    </RequireAuth>
+  );
+}
+
+function Results() {
   const router = useRouter();
   let data = null;
   try {
