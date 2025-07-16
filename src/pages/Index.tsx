@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -6,26 +7,29 @@ import { ShoppingCart, MapPin, Zap, Shield } from "lucide-react";
 import GroceryListBuilder from "@/components/GroceryListBuilder";
 import RetailerResults from "@/components/RetailerResults";
 import Navigation from "@/components/Navigation";
+import { search } from "@/lib/api";
 
 const Index = () => {
   const [showListBuilder, setShowListBuilder] = useState(false);
   const [searchResults, setSearchResults] = useState(null);
+
+  const searchMutation = useMutation({
+    mutationFn: search,
+    onSuccess: (data) => {
+      setSearchResults(data);
+    },
+    onError: (error) => {
+      console.error("Search failed:", error);
+      // You might want to show a toast notification here
+    },
+  });
 
   const handleStartShopping = () => {
     setShowListBuilder(true);
   };
 
   const handleSearch = (data: any) => {
-    // Mock search results for now
-    const mockResults = {
-      retailer: "Pick n Pay",
-      totalPrice: data.budget * 0.85, // Always under budget
-      items: data.items,
-      savings: data.budget * 0.15,
-      distance: "2.3km",
-      logo: "🛒"
-    };
-    setSearchResults(mockResults);
+    searchMutation.mutate(data);
   };
 
   if (searchResults) {

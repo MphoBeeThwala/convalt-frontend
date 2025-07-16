@@ -1,4 +1,6 @@
 import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card } from "@/components/ui/card";
@@ -7,10 +9,12 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { ArrowLeft, Shield, Phone, Mail, User } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import Navigation from "@/components/Navigation";
+import { login } from "@/lib/api";
 
 const Auth = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const [signupData, setSignupData] = useState({
     fullName: "",
@@ -24,6 +28,21 @@ const Auth = () => {
   const [loginData, setLoginData] = useState({
     email: "",
     password: ""
+  });
+
+  const loginMutation = useMutation({
+    mutationFn: login,
+    onSuccess: (data) => {
+      localStorage.setItem("token", data.token);
+      navigate("/dashboard");
+    },
+    onError: (error) => {
+      toast({
+        title: "Login Failed",
+        description: error.message,
+        variant: "destructive",
+      });
+    },
   });
 
   const validateSAId = (id: string): boolean => {
@@ -78,18 +97,9 @@ const Auth = () => {
     }, 2000);
   };
 
-  const handleLogin = async (e: React.FormEvent) => {
+  const handleLogin = (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-    
-    // Simulate API call
-    setTimeout(() => {
-      setIsLoading(false);
-      toast({
-        title: "Login successful!",
-        description: "Welcome back to Convergence.",
-      });
-    }, 1500);
+    loginMutation.mutate(loginData);
   };
 
   return (

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
@@ -9,31 +10,34 @@ import ShoppingHistory from "@/components/ShoppingHistory";
 import SavedLists from "@/components/SavedLists";
 import UserPreferences from "@/components/UserPreferences";
 import ShoppingInsights from "@/components/ShoppingInsights";
+import { getUserData } from "@/lib/api";
 
 const Dashboard = () => {
   const [activeTab, setActiveTab] = useState("overview");
 
-  // Mock user data
-  const userData = {
-    name: "Sarah Johnson",
-    totalSaved: 2450.50,
-    lastShop: "2 days ago",
-    favoriteStore: "Pick n Pay",
-    monthlyBudget: 3500,
-    spent: 2890
-  };
+  const token = localStorage.getItem("token");
 
-  const recentActivity = [
-    { id: 1, store: "Pick n Pay", amount: 456.80, items: 12, date: "2 days ago", savings: 45.20 },
-    { id: 2, store: "Checkers", amount: 234.50, items: 8, date: "1 week ago", savings: 23.10 },
-    { id: 3, store: "Woolworths", amount: 689.20, items: 15, date: "2 weeks ago", savings: 67.80 },
-  ];
+  const { data: userData, isLoading } = useQuery({
+    queryKey: ["userData"],
+    queryFn: () => getUserData(token!),
+    enabled: !!token,
+  });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
+
+  if (!userData) {
+    return <div>Error loading data</div>;
+  }
+
+  const { recentActivity, ...user } = userData;
 
   const quickStats = [
-    { title: "Total Saved", value: `R${userData.totalSaved.toFixed(2)}`, icon: TrendingDown, color: "text-success" },
-    { title: "Last Shop", value: userData.lastShop, icon: Clock, color: "text-primary" },
-    { title: "Favorite Store", value: userData.favoriteStore, icon: Star, color: "text-secondary" },
-    { title: "This Month", value: `R${userData.spent}/R${userData.monthlyBudget}`, icon: Calendar, color: "text-muted-foreground" }
+    { title: "Total Saved", value: `R${user.totalSaved.toFixed(2)}`, icon: TrendingDown, color: "text-success" },
+    { title: "Last Shop", value: user.lastShop, icon: Clock, color: "text-primary" },
+    { title: "Favorite Store", value: user.favoriteStore, icon: Star, color: "text-secondary" },
+    { title: "This Month", value: `R${user.spent}/R${user.monthlyBudget}`, icon: Calendar, color: "text-muted-foreground" }
   ];
 
   return (
